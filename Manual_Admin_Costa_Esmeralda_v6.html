@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Manual del Administrador · Costa Esmeralda</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Arial,sans-serif;font-size:14px;color:#222;background:#fff;padding:40px;max-width:860px;margin:0 auto}
+  h1{font-size:22px;font-weight:700;color:#1a5c3a;margin-bottom:4px}
+  .subtitulo{font-size:13px;color:#666;margin-bottom:6px}
+  .version{font-size:12px;color:#999;margin-bottom:32px}
+  .separador{border:none;border-top:2px solid #1a5c3a;margin:32px 0 20px}
+  .sep-thin{border:none;border-top:1px solid #ccc;margin:8px 0 16px}
+  h2{font-size:16px;font-weight:700;color:#1a5c3a;margin-bottom:12px}
+  h3{font-size:13px;font-weight:700;color:#2e75b6;margin:16px 0 6px}
+  .cuando{margin-bottom:12px}
+  .cuando strong{font-weight:700}
+  ol{margin-left:20px;margin-bottom:12px}
+  ol li{margin-bottom:4px;line-height:1.5}
+  .nota{background:#e8f3ed;border-left:3px solid #1a5c3a;padding:8px 12px;margin:10px 0;font-size:13px;color:#1a5c3a}
+  .aviso{background:#fff8e1;border-left:3px solid #f59e0b;padding:8px 12px;margin:10px 0;font-size:13px;color:#7b4f00}
+  .indice{background:#f5f5f5;border:1px solid #ddd;border-radius:6px;padding:20px 24px;margin-bottom:32px}
+  .indice h2{margin-bottom:12px}
+  .indice ol{margin-left:16px}
+  .indice li{margin-bottom:4px;font-size:13px}
+  @media print{body{padding:20px}.no-print{display:none}}
+</style>
+</head>
+<body>
+
+<h1>MANUAL DE USO — ADMINISTRADOR</h1>
+<div class="subtitulo">Sistema de Gestión Comunitaria Costa Esmeralda</div>
+<div class="version">Última actualización: septiembre 2026 · v6</div>
+
+<div class="indice">
+  <h2>ÍNDICE</h2>
+  <ol>
+    <li>Resetear el registro de un propietario</li>
+    <li>Aprobar el email de un propietario</li>
+    <li>Propietario que cambia su email</li>
+    <li>Sincronizar propietarios desde Google Sheets</li>
+    <li>Editar o borrar un reporte de inquilino</li>
+    <li>Editar o borrar un reporte de proveedor</li>
+    <li>Habilitar / deshabilitar módulos de reportes</li>
+    <li>Importar histórico de inquilinos</li>
+    <li>Notificaciones automáticas — qué hacer cuando llegan</li>
+    <li>Editar un usuario</li>
+    <li>Ver el registro de accesos</li>
+    <li>Recuperación de contraseña</li>
+    <li>Duplicados en el registro de propietarios (Google Sheets)</li>
+    <li>Mensajes para propietarios</li>
+    <li>Gestión de rubros de proveedores</li>
+    <li>Importar histórico de proveedores</li>
+    <li>Corregir registrados masivo</li>
+    <li>Fecha de registro de propietarios</li>
+    <li>Protección de datos en la app</li>
+  </ol>
+</div>
+
+<hr class="separador">
+
+<h2>1. RESETEAR EL REGISTRO DE UN PROPIETARIO</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> un propietario necesita volver a registrarse (cambió de teléfono, usó el teléfono de otro, o hubo un error en el registro).</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab Usuarios</li>
+  <li>Buscar al propietario por nombre o ID</li>
+  <li>Click en "Editar"</li>
+  <li>Click en "🗑 Resetear registro del propietario" (zona roja, abajo del modal)</li>
+  <li>Confirmar el diálogo</li>
+  <li>El sistema elimina automáticamente su cuenta de Firestore</li>
+  <li>Se abre Firebase Authentication en una nueva pestaña</li>
+  <li>El email del propietario se copia al portapapeles automáticamente</li>
+  <li>En Firebase Auth: pegar el email en el buscador → encontrar el usuario → eliminarlo</li>
+  <li>Listo — el propietario puede volver a registrarse desde cero</li>
+</ol>
+<div class="nota">📌 Al completar el reseteo, aparece un toast verde con el email copiado al portapapeles. Pegalo directamente en el buscador de Firebase Auth para encontrar y eliminar la cuenta.</div>
+<div class="aviso">⚠️ El propietario sigue en el padrón de Propietarios. Solo se elimina su acceso.</div>
+
+<hr class="separador">
+
+<h2>2. APROBAR EL EMAIL DE UN PROPIETARIO</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> un propietario se registra con un email distinto al que tenía en la planilla. Llega un email al admin y aparece un badge amarillo en el panel.</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>Recibís el email "Propietario completó su email"</li>
+  <li>Panel Admin → tab Propietarios → buscar al propietario (fila destacada en amarillo)</li>
+  <li>Click en "Aprobar email"</li>
+  <li>Actualizar en la planilla de Google Sheets: el email y, si corresponde, los módulos habilitados</li>
+</ol>
+<div class="nota">📌 El propietario YA PUEDE ENTRAR a la app mientras vos realizás estos pasos. El aviso es para vos, no un bloqueo para ellos.</div>
+<div class="nota">📌 Al aprobar, el sistema actualiza el email en ambas colecciones (propietarios y usuarios) automáticamente.</div>
+<div class="aviso">⚠️ Si no actualizás la planilla, la próxima sincronización puede pisar el nuevo email.</div>
+
+<hr class="separador">
+
+<h2>3. PROPIETARIO QUE CAMBIA SU EMAIL</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> un propietario ya registrado quiere usar un email distinto.</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>El propietario avisa al admin que cambió de email</li>
+  <li>El admin resetea su registro desde el panel (ver proceso 1)</li>
+  <li>El propietario se registra de nuevo con el nuevo email</li>
+  <li>El sistema manda el mail "Propietario completó su email" porque el email nuevo es distinto al de la planilla</li>
+  <li>El admin aprueba desde el panel (ver proceso 2)</li>
+  <li>El admin actualiza el email en la planilla de Google Sheets</li>
+</ol>
+<div class="aviso">⚠️ No cambiar el email directamente desde el panel admin — eso actualiza Firestore pero NO Firebase Authentication y genera desincronización.</div>
+<div class="aviso">⚠️ El proceso correcto siempre es: resetear → re-registrar → aprobar → actualizar planilla.</div>
+
+<hr class="separador">
+
+<h2>4. SINCRONIZAR PROPIETARIOS DESDE GOOGLE SHEETS</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> altas, bajas, cambios de teléfono, barrio, lote o módulos de acceso.</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>Hacer los cambios en la planilla de Google Sheets primero</li>
+  <li>Panel Admin → tab "Importar propietarios"</li>
+  <li>Click en "Sincronizar"</li>
+  <li>Esperar confirmación</li>
+</ol>
+<div class="aviso">⚠️ Los módulos (Inquilinos / Proveedores) se gestionan SIEMPRE desde la planilla. Si los cambiás en el panel admin y después sincronizás, la sincronización los pisa.</div>
+<div class="aviso">⚠️ Si habilitás un módulo desde el panel (Editar usuario), también actualizarlo en la planilla antes de la próxima sincronización.</div>
+<div class="aviso">⚠️ Si el propietario ya se registró, la sincronización preserva su cuenta y contraseña.</div>
+<div class="aviso">⚠️ La columna C (Nombre) de la hoja Registro DEBE tener el header "Nombre". Si se borra accidentalmente (por ejemplo al usar el buscador y apretar Enter), los emails de todos los propietarios pendientes se pierden en la próxima sincronización. Verificar antes de sincronizar.</div>
+
+<hr class="separador">
+
+<h2>5. EDITAR O BORRAR UN REPORTE DE INQUILINO</h2>
+<hr class="sep-thin">
+<h3>EDITAR COMENTARIO:</h3>
+<ol>
+  <li>Módulo Inquilinos → buscar el registro</li>
+  <li>Click en el ✏️ que aparece al lado del comentario</li>
+  <li>Editar el texto (máx. 600 caracteres)</li>
+  <li>Click en "Guardar"</li>
+  <li>La tabla se actualiza automáticamente</li>
+</ol>
+<h3>BORRAR UN REPORTE:</h3>
+<ol>
+  <li>Módulo Inquilinos → buscar el registro</li>
+  <li>Click en el ✏️ al lado del comentario</li>
+  <li>Click en "🗑 Borrar reporte"</li>
+  <li>Si es un registro individual → doble confirmación → se borra</li>
+  <li>Si pertenece a un grupo (mismo ID) → el sistema avisa cuántos integrantes tiene y pregunta si borrás solo ese o todo el grupo</li>
+</ol>
+<div class="aviso">⚠️ El borrado es permanente. No hay forma de recuperar un reporte borrado a menos que esté en la planilla original de históricos.</div>
+
+<hr class="separador">
+
+<h2>6. EDITAR O BORRAR UN REPORTE DE PROVEEDOR</h2>
+<hr class="sep-thin">
+<h3>EDITAR COMENTARIO:</h3>
+<ol>
+  <li>Módulo Proveedores → buscar el registro</li>
+  <li>Click en el ✏️ que aparece al lado del comentario</li>
+  <li>Editar el texto (máx. 600 caracteres)</li>
+  <li>Click en "Guardar"</li>
+  <li>La tabla se actualiza automáticamente</li>
+</ol>
+<h3>BORRAR UN REPORTE:</h3>
+<ol>
+  <li>Módulo Proveedores → buscar el registro</li>
+  <li>Click en el ✏️ al lado del comentario</li>
+  <li>Click en "🗑 Borrar reporte"</li>
+  <li>Doble confirmación → se borra</li>
+</ol>
+<div class="aviso">⚠️ El módulo Proveedores es actualmente solo visible para administradores.</div>
+<div class="aviso">⚠️ El borrado es permanente.</div>
+
+<hr class="separador">
+
+<h2>7. HABILITAR / DESHABILITAR MÓDULOS DE REPORTES</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> fuera de temporada o cuando no querés recibir nuevos reportes.</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab "⚙️ Configuración"</li>
+  <li>Usar el toggle correspondiente:<br>→ "Módulo Reportar inquilino" → habilita/deshabilita reportes de inquilinos<br>→ "Módulo Reportar proveedor" → habilita/deshabilita reportes de proveedores</li>
+</ol>
+<div class="nota">📌 Efecto inmediato: el botón de reportar aparece bloqueado para todos los propietarios y aparece un aviso amarillo. Si alguien intenta reportar igual, el sistema lo bloquea.</div>
+
+<hr class="separador">
+
+<h2>8. IMPORTAR HISTÓRICO DE INQUILINOS</h2>
+<hr class="sep-thin">
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab "📁 Importar histórico"</li>
+  <li>Pegar o cargar el CSV</li>
+  <li>Click en "Importar"</li>
+</ol>
+<div class="nota">📌 Los registros quedan con origen "HISTÓRICO" y sin email de propietario.</div>
+<div class="aviso">⚠️ El botón "🗑 Borrar todos" elimina TODA la colección de inquilinos. Usar con extremo cuidado.</div>
+
+<hr class="separador">
+
+<h2>9. NOTIFICACIONES AUTOMÁTICAS — QUÉ HACER CUANDO LLEGAN</h2>
+<hr class="sep-thin">
+<p><strong>EMAIL: "Nuevo propietario registrado"</strong><br>→ Usó el mismo email que figura en la planilla<br>→ No requiere ninguna acción</p><br>
+<p><strong>EMAIL: "Propietario completó su email"</strong><br>→ Usó un email distinto al de la planilla<br>→ Ir al panel → Propietarios → aprobar el email → actualizar email y módulos en la planilla<br>→ El propietario ya puede usar la app mientras realizás estos pasos</p><br>
+<p><strong>EMAIL: "Nuevo reporte de inquilinos"</strong><br>→ Un propietario cargó un reporte desde la app<br>→ Revisar en Módulo Inquilinos si es necesario intervenir</p>
+
+<hr class="separador">
+
+<h2>10. EDITAR UN USUARIO</h2>
+<hr class="sep-thin">
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab Usuarios</li>
+  <li>Buscar por nombre o ID</li>
+  <li>Click en "Editar"</li>
+  <li>Campos editables: Email, Rol (admin/propietario), Estado (activo/inactivo), Módulos</li>
+  <li>Click en "Guardar cambios"</li>
+</ol>
+<div class="aviso">⚠️ NO usar este campo para cambiar el email — genera desincronización con Firebase Auth. Ver proceso 3 para el cambio de email correcto.</div>
+<div class="aviso">⚠️ Los módulos se gestionan desde la planilla. Cambiarlos acá es temporal — la próxima sincronización los puede pisar.</div>
+
+<hr class="separador">
+
+<h2>11. VER EL REGISTRO DE ACCESOS</h2>
+<hr class="sep-thin">
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab "📊 Accesos"</li>
+  <li>Se muestra la tabla con todos los accesos: nombre, email, fecha y hora</li>
+  <li>Ordenado del más reciente al más antiguo</li>
+  <li>Paginación de 30 registros por página</li>
+  <li>El total de sesiones acumuladas aparece arriba a la derecha</li>
+</ol>
+<div class="nota">📌 El contador de visitas también es visible en la barra superior de la app para todos los usuarios, no solo para admins.</div>
+
+<hr class="separador">
+
+<h2>12. RECUPERACIÓN DE CONTRASEÑA — QUÉ PASA CUANDO UN PROPIETARIO OLVIDA SU CLAVE</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> El propietario puede recuperar su contraseña solo, sin intervención del admin.</div>
+<h3>PASOS QUE HACE EL PROPIETARIO:</h3>
+<ol>
+  <li>En la pantalla de login, click en "¿Olvidaste tu contraseña? Recuperar acceso →"</li>
+  <li>Ingresa su email en el campo de login</li>
+  <li>Le llega un email automático en español con un link</li>
+  <li>Hace click en el link y crea una nueva contraseña</li>
+  <li>Ya puede ingresar normalmente</li>
+</ol>
+<div class="nota">📌 No requiere ninguna acción del administrador.</div>
+<div class="aviso">⚠️ Si el propietario no recuerda qué email usó, el admin debe resetear el registro completo (ver proceso 1) y el propietario se registra de nuevo.</div>
+
+<hr class="separador">
+
+<h2>13. DUPLICADOS EN EL REGISTRO DE PROPIETARIOS (GOOGLE SHEETS)</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> al procesar un ZIP, el nombre de la persona difiere mínimamente del que ya está en el Registro.</div>
+<h3>CÓMO DETECTARLOS:</h3>
+<ol>
+  <li>Buscar en el Registro por nombre o ID</li>
+  <li>Si aparece el mismo ID dos veces con nombres similares, hay un duplicado</li>
+</ol>
+<h3>CÓMO RESOLVERLO:</h3>
+<ol>
+  <li>Identificar cuál de las dos filas es la correcta (la original)</li>
+  <li>Borrar solo la fila duplicada — nunca borrar toda la hoja</li>
+  <li>Verificar en el Buscador que ya no aparece duplicado</li>
+</ol>
+<div class="aviso">⚠️ El duplicado existe solo en el Sheets. En Firestore (la web) no se duplica porque se identifica por id_registro, no por nombre.</div>
+
+<hr class="separador">
+
+<h2>14. MENSAJES PARA PROPIETARIOS</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> cuando querés informar algo a todos los propietarios (avisos importantes, cambios, recordatorios).</div>
+<h3>PUBLICAR UN MENSAJE:</h3>
+<ol>
+  <li>Panel Admin → tab "📢 Mensajes"</li>
+  <li>Completar el campo Título (máx. 80 caracteres)</li>
+  <li>Escribir el mensaje en el campo Contenido (máx. 1000 caracteres)</li>
+  <li>Click en "Publicar mensaje"</li>
+</ol>
+<h3>ACTIVAR / DESACTIVAR UN MENSAJE:</h3>
+<ol>
+  <li>En la lista de mensajes, usar el botón "Activar" o "Desactivar" de cada mensaje</li>
+  <li>Un mensaje desactivado no aparece a los propietarios pero queda guardado</li>
+</ol>
+<h3>BORRAR UN MENSAJE:</h3>
+<ol>
+  <li>Click en "🗑 Borrar" → confirmar → el mensaje se elimina permanentemente</li>
+</ol>
+<div class="nota">📌 El mensaje aparece como popup al ingresar. Cada propietario lo ve una sola vez — una vez que lo cierra, no vuelve a aparecer.</div>
+<div class="aviso">⚠️ Respetar los saltos de línea al escribir — el sistema los muestra tal como se escribieron.</div>
+
+<hr class="separador">
+
+<h2>15. GESTIÓN DE RUBROS DE PROVEEDORES</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> cuando necesitás agregar, renombrar o reorganizar las categorías disponibles para reportes de proveedores.</div>
+<h3>AGREGAR UN RUBRO:</h3>
+<ol>
+  <li>Panel Admin → tab "🏷️ Rubros"</li>
+  <li>Escribir el nombre del nuevo rubro en el campo de texto</li>
+  <li>Click en "＋ Agregar" o presionar Enter</li>
+</ol>
+<h3>EDITAR UN RUBRO:</h3>
+<ol>
+  <li>En la lista, click en "✏️ Editar" junto al rubro</li>
+  <li>Modificar el nombre y click en "Guardar" (o Escape para cancelar)</li>
+</ol>
+<div class="aviso">⚠️ Si renombrás un rubro existente, los registros históricos en Firestore que tenían ese rubro pueden quedar sin coincidir con el nuevo nombre.</div>
+
+<hr class="separador">
+
+<h2>16. IMPORTAR HISTÓRICO DE PROVEEDORES</h2>
+<hr class="sep-thin">
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab "📁 Importar Proveedores"</li>
+  <li>Pegar o cargar el CSV</li>
+  <li>Click en "Importar"</li>
+</ol>
+<div class="nota">📌 Los registros quedan con origen "HISTÓRICO" y sin email de propietario.</div>
+<div class="aviso">⚠️ El botón "🗑 Borrar todos" elimina TODA la colección de proveedores. Usar con extremo cuidado.</div>
+
+<hr class="separador">
+
+<h2>17. CORREGIR REGISTRADOS MASIVO</h2>
+<hr class="sep-thin">
+<div class="cuando"><strong>Cuándo:</strong> después de una reimportación masiva de propietarios que resetea el campo "registrado", o cuando el contador de Registrados no coincide con los usuarios reales en Firebase Auth.</div>
+<h3>PASOS:</h3>
+<ol>
+  <li>Panel Admin → tab "Propietarios"</li>
+  <li>Click en "🔧 Corregir registrados"</li>
+  <li>Confirmar el diálogo</li>
+  <li>El sistema cruza los propietarios con los usuarios activos por email y teléfono, y marca como "registrado" a los que coinciden</li>
+</ol>
+<div class="nota">📌 Solo corrige propietarios que estaban en "false" y tienen un usuario activo. No toca los que ya estaban en "true".</div>
+<div class="aviso">⚠️ Usar solo cuando hay una discrepancia real entre el contador de Registrados y los usuarios en Firebase Auth.</div>
+
+<hr class="separador">
+
+<h2>18. FECHA DE REGISTRO DE PROPIETARIOS</h2>
+<hr class="sep-thin">
+<p>La columna Acción del tab Propietarios muestra la fecha en que cada propietario se registró (📅 dd/mm/aaaa). Los nuevos usuarios la guardan automáticamente. Para propietarios históricos, usar el botón de recuperación.</p>
+<h3>RECUPERAR FECHAS HISTÓRICAS:</h3>
+<ol>
+  <li>Panel Admin → tab "Propietarios"</li>
+  <li>Click en "📅 Recuperar fechas"</li>
+  <li>El sistema busca en el historial de accesos el primer login de cada usuario y lo guarda como fecha de registro</li>
+</ol>
+<div class="nota">📌 Solo se usa una vez para poblar el historial. Los nuevos registros se guardan solos.</div>
+<div class="aviso">⚠️ Si el propietario tiene un email diferente en la colección logins vs usuarios, no se puede recuperar la fecha automáticamente — cargarla manualmente en Firestore (colección usuarios, campo fechaRegistro, tipo Timestamp).</div>
+
+<hr class="separador">
+
+<h2>19. PROTECCIÓN DE DATOS EN LA APP</h2>
+<hr class="sep-thin">
+<p>La app tiene protecciones activas para dificultar que los propietarios puedan copiar, imprimir o extraer información de la pantalla.</p>
+<h3>PROTECCIONES ACTIVAS PARA PROPIETARIOS:</h3>
+<ol>
+  <li>Clic derecho bloqueado — no aparece el menú contextual del navegador</li>
+  <li>Selección de texto bloqueada — no se puede seleccionar ni copiar texto de la pantalla</li>
+  <li>Impresión bloqueada — Ctrl+P no funciona y la página no se imprime</li>
+  <li>Ctrl+S bloqueado — no se puede guardar la página</li>
+</ol>
+<div class="nota">📌 Estas protecciones aplican solo a los propietarios. El administrador tiene todas las funciones del navegador habilitadas normalmente.</div>
+<div class="aviso">⚠️ Estas protecciones dificultan pero no impiden completamente la extracción de datos por parte de usuarios técnicos. Son una barrera para el usuario común.</div>
+
+<hr class="separador">
+<p style="text-align:center;color:#999;font-size:12px;margin-top:20px">Sistema de Gestión Comunitaria · Costa Esmeralda · septiembre 2026</p>
+
+</body>
+</html>
